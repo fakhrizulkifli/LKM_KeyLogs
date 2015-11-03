@@ -1,4 +1,3 @@
-# NoobKeyLogs
-A simple kernel-land keylogger
+# LKM_KeyLogs
 
-##### Warning: buggy
+A simple LKM based keylogger. Built for fun.
